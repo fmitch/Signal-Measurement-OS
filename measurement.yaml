@@ -1,0 +1,26 @@
+# measurement.yaml file
+
+start: now
+stop: now
+
+#Time interval for the system to run in seconds
+interval: 1800
+sleep_time: 1
+gains: 40
+sample_rates: 30e6
+
+#duration in milisec for each collection of data 
+duration_ms: 1000
+usrp_args: type=b200
+
+#start center-frequency
+#fcs_start: 1700e6
+fcs_start: 700e6
+#end center-frequency
+#fcs_end: 3710e6
+fcs_end: 2800e6
+fcs_diff: 150e3
+
+#Location
+loc_type: static
+loc: sagepoint 
