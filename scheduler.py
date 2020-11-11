@@ -164,7 +164,9 @@ def save_frequency_dict (lfreq_dict):
     
   plot_np_lst = np.array(plot_lst)
 
-  with open('data/data.pkl','ab+') as f:
+  start_time = plot_np_lst = data[0][0].strftime('%y%m%d%H%M%S')
+  end_time = plot_np_lst = data[-1][0].strftime('%y%m%d%H%M%S')
+  with open('data/data_%s_%s.pkl' % (start_time, end_time),'ab+') as f:
     pickle.dump (plot_np_lst, f)
 
 
