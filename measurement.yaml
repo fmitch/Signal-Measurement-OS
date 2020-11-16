@@ -11,6 +11,7 @@ sample_rates: 30e6
 
 #duration in milisec for each collection of data 
 duration_ms: 1000
+sub_duration_ms: 200
 usrp_args: type=b200
 
 #start center-frequency
@@ -18,7 +19,7 @@ usrp_args: type=b200
 fcs_start: 700e6
 #end center-frequency
 #fcs_end: 3710e6
-fcs_end: 2800e6
+fcs_end: 800e6
 fcs_diff: 150e3
 
 #Location
