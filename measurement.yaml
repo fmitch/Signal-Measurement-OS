@@ -4,13 +4,13 @@ start: now
 stop: now
 
 #Time interval for the system to run in seconds
-interval: 1800
+interval: 28800
 sleep_time: 1
 gains: 40
 sample_rates: 30e6
 
 #duration in milisec for each collection of data 
-duration_ms: 1000
+duration_ms: 30000
 sub_duration_ms: 200
 usrp_args: type=b200
 
@@ -19,7 +19,7 @@ usrp_args: type=b200
 fcs_start: 700e6
 #end center-frequency
 #fcs_end: 3710e6
-fcs_end: 800e6
+fcs_end: 2800e6
 fcs_diff: 150e3
 
 #Location

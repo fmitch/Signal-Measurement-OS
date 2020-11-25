@@ -198,7 +198,8 @@ def plot_usage_scatter_plot (lfreq_dict):
 def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
   sample_rate = float (measurement_list ['sample_rates'])
   measurement_duration = measurement_list['duration_ms'] / 1000
-  num_sub_intervals = measurement_list['duration_ms'] // measurement_list['sub_duration_ms']
+  sub_measurement_duration = measurement_list['sub_duration_ms'] / 1000
+  num_sub_intervals =  int(measurement_duration / sub_measurement_duration)
   if measurement_list['duration_ms'] < measurement_list['sub_duration_ms']:
       num_sub_intervals = 1
   nsamps = int(sample_rate * measurement_list['duration_ms'] * 1e-3)
@@ -258,7 +259,6 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
         lfreq_dict[fcs_s_mz].center_fcs = fcs_s_mz
         lfreq_dict[fcs_s_mz].bandwidth = fcs_bw
 
-  pdb.set_trace()
   for idx, center_fcs_val in enumerate (freq_lst):
     center_fcs = center_fcs_val + C.ANALOG_BW/2
 
@@ -268,11 +268,10 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
 
     time_start = datetime.now()
     #Time domain data
-    t0 = time.time()
     acq = radio.acquire_samples(center_fcs, nsamps, nskip=nskip).astype(np.complex64)
     time_end = datetime.now()
     time_delta = (time_end - time_start) / num_sub_intervals
-    t1 = time.time()
+    #pdb.set_trace()
 
     #Frequency domain data
     ####f_acq = (np.fft.fft(acq))/nsamps
@@ -288,8 +287,8 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
       f_acq = np.fft.fftshift(f_acq)
 
       for s_idx in range (no_bins):
-        start_i = int(s_idx * fcs_bw * measurement_duration)
-        end_i = int((fcs_bw + s_idx*fcs_bw) * measurement_duration - 1)
+        start_i = int(int_size / no_bins * s_idx)
+        end_i = int(int_size / no_bins * (s_idx+1))
 
         fcs_s = center_fcs_val + fcs_bw*s_idx + fcs_bw/2
         fcs_s_mz = float(fcs_s)/1e6
@@ -298,7 +297,7 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
         temp_lst.append (time_start+time_delta*sub_int)
         temp_lst.append (fcs_s_mz)
         temp_lst.append (fcs_bw)
-        P_fft = np.sum(np.abs(f_acq[start_i:end_i+1])**2)/fcs_bw
+        P_fft = np.sum(np.abs(f_acq[start_i:end_i])**2)/fcs_bw
 
         P_fft_log = np.nan_to_num (10.0 * np.log10(P_fft))
 
@@ -312,10 +311,6 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
         lfreq_dict[fcs_s_mz].freq_energy_lst.append(temp_lst)
 
     logger.info("DFT Power of freq {} MHz = {}, {} dbm".format(fcs_s_mz, P_fft, P_fft_log))
-    t4 = time.time()
-    print('Measurement Shape', acq.shape)
-    print('Measurement Time', t1-t0)
-    print('Processing Time', t4-t1)
 
     #plot live radio psd
     if (plot_psd_flag):
@@ -323,7 +318,7 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
       radio.plot_live_psd (fig, ax, S_xx_welch, freq)
 
 
-  pdb.set_trace()
+  #pdb.set_trace()
   save_frequency_dict (lfreq_dict)  
   #plot_usage_scatter_plot (lfreq_dict)
   return 
