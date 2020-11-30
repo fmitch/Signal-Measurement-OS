@@ -1,4 +1,4 @@
-#git clone https://github.com/EttusResearch/uhd.git
+git clone https://github.com/EttusResearch/uhd.git
 sudo apt-get install libboost-all-dev libusb-1.0.0-dev python-mako doxygen python-docutils cmake build-essential python3-pip
 UHD_REPO_PATH=$PWD/uhd
 cd $UHD_REPO_PATH/host
