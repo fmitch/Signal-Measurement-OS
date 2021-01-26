@@ -385,7 +385,7 @@ if __name__ == "__main__":
       # scalar values to Python the dictionary format
        measurement_list = yaml.load(file, Loader=yaml.FullLoader)
 
-    interval = measurement_list['interval'] * 60 * 60
+    interval = int(measurement_list['interval']) * 60 * 60
     sleep_time = measurement_list['sleep_time'] 
     usrp_args = measurement_list['usrp_args']
     timer = threading.Timer(interval, handler)
