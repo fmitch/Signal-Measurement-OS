@@ -167,7 +167,7 @@ def save_frequency_dict (lfreq_dict):
 
   start_time = plot_np_lst[0][0].strftime('%y%m%d%H%M%S')
   end_time = plot_np_lst[-1][0].strftime('%y%m%d%H%M%S')
-  with open('data/data_%s_%s.pkl' % (start_time, end_time),'ab+') as f:
+  with open('/data/frost/data_%s_%s.pkl' % (start_time, end_time),'ab+') as f:
     pickle.dump (plot_np_lst, f)
 
 
@@ -273,6 +273,21 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
     time_delta = (time_end - time_start) / num_sub_intervals
     #pdb.set_trace()
 
+    ### Plot FFT
+    ###
+
+    #huge_facq = (pyfftw.interfaces.numpy_fft.fft(acq, threads=2))
+    #huge_facq = np.fft.fftshift(huge_facq / huge_facq.max())
+    #huge_freq = np.fft.fftshift(np.fft.fftfreq(len(acq),d = 1/sample_rate))
+    #plt.plot(huge_freq, np.abs(huge_facq))
+    #plt.xlabel('Frequency + 713 MHz')
+    #plt.tight_layout()
+    #plt.show()
+
+    #plt.plot(huge_freq, np.abs(huge_facq))
+    #plt.xlabel('Frequency + 713 MHz')
+    #plt.tight_layout()
+
     #Frequency domain data
     ####f_acq = (np.fft.fft(acq))/nsamps
     int_size = int(nsamps / num_sub_intervals)
@@ -285,6 +300,10 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
 
       # put DC in the center
       f_acq = np.fft.fftshift(f_acq)
+      #f_acq2 = f_acq / f_acq.max()
+
+      #freq = np.fft.fftshift(np.fft.fftfreq(len(f_acq), d=1/sample_rate)) 
+      #pdb.set_trace()
 
       for s_idx in range (no_bins):
         start_i = int(int_size / no_bins * s_idx)
@@ -292,6 +311,8 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
 
         fcs_s = center_fcs_val + fcs_bw*s_idx + fcs_bw/2
         fcs_s_mz = float(fcs_s)/1e6
+
+        #plt.scatter(freq[start_i:end_i],np.abs(f_acq2[start_i:end_i] ))
 
         temp_lst = []
         temp_lst.append (time_start+time_delta*sub_int)
@@ -304,11 +325,13 @@ def sweep_frequencies (measurement_list, map_list, top, plot_psd_flag):
         temp_lst.append (P_fft_log)
 
         #Dummy threshold and signal presence values, updated in plot_graph
-        temp_lst.append (0)
-        temp_lst.append (0)
+        #temp_lst.append (0)
+        #temp_lst.append (0)
 
 
         lfreq_dict[fcs_s_mz].freq_energy_lst.append(temp_lst)
+
+      #plt.show()
 
     logger.info("DFT Power of freq {} MHz = {}, {} dbm".format(fcs_s_mz, P_fft, P_fft_log))
 
@@ -362,7 +385,7 @@ if __name__ == "__main__":
       # scalar values to Python the dictionary format
        measurement_list = yaml.load(file, Loader=yaml.FullLoader)
 
-    interval = measurement_list['interval']
+    interval = measurement_list['interval'] * 60 * 60
     sleep_time = measurement_list['sleep_time'] 
     usrp_args = measurement_list['usrp_args']
     timer = threading.Timer(interval, handler)
