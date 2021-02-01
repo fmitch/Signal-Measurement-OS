@@ -11,6 +11,10 @@ sudo make install
 sudo /usr/local/lib/uhd/utils/uhd_images_downloader.py
 pip3 install pyYAML pyFFTW
 pip3 install numpy scipy
+sudo mkdir /data
+sudo /usr/local/etc/emulab/mkextrafs.pl /data
+sudo chown frost /data
+mkdir /data/frost
 export LD_LIBRARY_PATH=$UHD_REPO_PATH
 export UHD_IMAGES_DIR=/usr/local/share/uhd/images
 export PYTHONPATH=$UHD_REPO_PATH/host/build/python
